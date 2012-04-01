@@ -1,6 +1,7 @@
 package com.knowlogik.bonevampire;
 
-import peasy.PeasyCam;
+import com.knowlogik.bonevampire.camera.PeasyCamPlus;
+
 import processing.core.PApplet;
 
 public class Display extends PApplet {
@@ -10,7 +11,7 @@ public class Display extends PApplet {
     private static final int WIDTH = 1200;
     private static final int HEIGHT = 800;
     
-    private PeasyCam cam;
+    private PeasyCamPlus cam;
     
     public void setup() {
         
@@ -21,9 +22,17 @@ public class Display extends PApplet {
         frameRate(30);
         
         // Camera
-        cam = new PeasyCam(this, 0, 0, 0, 400);
+        cam = new PeasyCamPlus(this, 0, 0, 0, 400);
         cam.setMinimumDistance(200);
-        cam.setMaximumDistance(800);
+        cam.setMaximumDistance(2000);
+        // Would be nice to rotate a *little* around the y-axis... This locks it in place completely.
+        // cam.setYawRotationMode();
+        
+        // Get reoriented
+        cam.rotateX(PI);
+        
+        // This sets our current view as the default camera for a reset event
+        cam.setDefaultCameraState();
     }
     
     private int count = 0;
@@ -41,9 +50,9 @@ public class Display extends PApplet {
         pointLight(205, 205, 205, 120, 120, -200);
         
         // Draw primatives
-        //fill(200);
-        //noStroke();
-        //box(100, 20, 200);
+        // fill(200);
+        // noStroke();
+        // box(100, 20, 200);
         
         // Draw.. things
         fill(255);
@@ -56,7 +65,6 @@ public class Display extends PApplet {
         vertex(100, 200, 100);
         vertex(100, 100, 100);
         endShape();
-        
         
         // Draw axes
         strokeWeight(2);
