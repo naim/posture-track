@@ -49,7 +49,7 @@ public class Display extends PApplet {
         lights();
         pointLight(205, 205, 205, 120, 120, -200);
         
-        // Draw primatives
+        // Draw primitives
         // fill(200);
         // noStroke();
         // box(100, 20, 200);
