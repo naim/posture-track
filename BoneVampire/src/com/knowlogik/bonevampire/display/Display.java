@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-
 import processing.core.PApplet;
 
 public class Display extends PApplet {
@@ -30,7 +29,7 @@ public class Display extends PApplet {
         cam = new PeasyCamPlus(this, 0, 0, 0, 400);
         cam.setMinimumDistance(200);
         cam.setMaximumDistance(2000);
-        // Would be nice to rotate a *little* around the y-axis... This locks it in place completely.
+        // This locks the camera around the y-axis completely. Would be nice if I could specify min/max angles...
         // cam.setYawRotationMode();
         
         // Get reoriented

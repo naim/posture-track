@@ -3,8 +3,6 @@ package com.knowlogik.bonevampire;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.Window;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -22,9 +20,9 @@ public class BoneVampire extends Frame {
     private static final long serialVersionUID = 1L;
     
     // private final String CONTEXT_DEF = "config/OpenNI-Config.xml";
-    private final String TEST_KCAP = "data/2012-03-29-15-49.kcap";
+    private final String TEST_BONE_CAP = "data/2012-03-29-15-49-micro.bcap";
     
-    private Display display = null;
+    private Display display;
     
     // private Context context = null;
     // private OutArg<ScriptNode> scriptNode = new OutArg<ScriptNode>();
@@ -35,15 +33,20 @@ public class BoneVampire extends Frame {
         super("BoneVampire");
         
         // Init OpenNI
+        // TODO Would be nice to have a real-time mode as well. For now use my bonetracker prog to record bcap files.
         // try {
         // context = Context.createFromXmlFile(CONTEXT_DEF, scriptNode);
         // userGen = UserGenerator.create(context);
         // }
         // catch (GeneralException e) {
-        // System.err.print(e);
+        // System.err.println(e);
         // }
         
-        // Init window
+        // Load bonecap file
+        BoneCapture boneCap = new BoneCapture();
+        boneCap.loadFromFile(TEST_BONE_CAP);
+        
+        // Init display/window
         display = new Display();
         
         setSize(1200, 800);
@@ -64,11 +67,6 @@ public class BoneVampire extends Frame {
         
         display.init();
         setVisible(true);
-    }
-    
-    private BoneCapture loadBoneCaptureFile(String filepath) {
-        
-        return new BoneCapture();
     }
     
     public static void main(String[] args) {
