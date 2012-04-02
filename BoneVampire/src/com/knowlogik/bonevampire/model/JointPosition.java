@@ -1,5 +1,7 @@
 package com.knowlogik.bonevampire.model;
 
+import processing.core.PVector;
+
 public class JointPosition {
     
     private String name;
@@ -44,5 +46,10 @@ public class JointPosition {
     
     public float getZ() {
         return zPos;
+    }
+    
+    public PVector getPVector() {
+        
+        return new PVector(xPos, yPos, zPos);
     }
 }

@@ -7,6 +7,7 @@ import com.knowlogik.bonevampire.model.BoneCapture;
 import com.knowlogik.bonevampire.model.BoneFrame;
 
 import processing.core.PApplet;
+import processing.core.PVector;
 
 public class Display extends PApplet {
     
@@ -99,9 +100,9 @@ public class Display extends PApplet {
         
         // Lights
         // NOTE No ambient light for now. Looks pretty "blah".
-        // lights();
+        lights();
         pointLight(245, 245, 245, X_ORIGIN_OFFSET, Y_ORIGIN_OFFSET, Z_ORIGIN_OFFSET - 200);
-        pointLight(30, 30, 30, X_ORIGIN_OFFSET, Y_ORIGIN_OFFSET, Z_ORIGIN_OFFSET + 2000);
+        pointLight(130, 130, 130, X_ORIGIN_OFFSET, Y_ORIGIN_OFFSET, Z_ORIGIN_OFFSET + 2000);
         
         // Draw axes
         strokeWeight(2);
@@ -150,12 +151,53 @@ public class Display extends PApplet {
         point(frame.getLeftShoulderPosition().getX(), frame.getLeftShoulderPosition().getY(), frame.getLeftShoulderPosition().getZ());
         point(frame.getRightShoulderPosition().getX(), frame.getRightShoulderPosition().getY(), frame.getRightShoulderPosition().getZ());
         
-        // Head
-        fill(255, 200);
+        // Draw joint connectors
+        strokeWeight(6);
+        stroke(100, 0, 100);
+        line(frame.getHeadPosition().getX(), frame.getHeadPosition().getY() - (headLength * 80), frame.getHeadPosition().getZ() + headRadius,
+                frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ());
+        line(frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ(),
+                frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ());
+        line(frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ(),
+                frame.getLeftShoulderPosition().getX(), frame.getLeftShoulderPosition().getY(), frame.getLeftShoulderPosition().getZ());
+        line(frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ(),
+                frame.getRightShoulderPosition().getX(), frame.getRightShoulderPosition().getY(), frame.getRightShoulderPosition().getZ());
+        line(frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ(),
+                frame.getLeftShoulderPosition().getX(), frame.getLeftShoulderPosition().getY(), frame.getLeftShoulderPosition().getZ());
+        line(frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ(),
+                frame.getRightShoulderPosition().getX(), frame.getRightShoulderPosition().getY(), frame.getRightShoulderPosition().getZ());
+        
+        // Turn off stroke for 3D primitives
         noStroke();
-        translate(frame.getHeadPosition().getX(), frame.getHeadPosition().getY(), frame.getHeadPosition().getZ() + headRadius + 5);
+        
+        // Head
+        pushMatrix();
+        fill(255, 200);
+        translate(frame.getHeadPosition().getX(), frame.getHeadPosition().getY() - (headLength * 40), frame.getHeadPosition().getZ() + headRadius + 5);
         scale(headWidth, headLength, headDepth);
         sphere(headRadius);
+        popMatrix();
+        
+        // Neck
+        PVector vHeadNeck = Util.cartesianToPolar(PVector.sub(new PVector(frame.getHeadPosition().getX(), frame.getHeadPosition().getY() - (headLength * 80), frame.getHeadPosition().getZ() + headRadius),
+                frame.getNeckPosition().getPVector()));
+        float neckLength = (frame.getHeadPosition().getY() - frame.getNeckPosition().getY()) / 3;
+        pushMatrix();
+        fill(255, 100);
+        translate(frame.getNeckPosition().getX(), frame.getNeckPosition().getY() + neckLength, frame.getNeckPosition().getZ() - (neckLength / 3.5f));
+        // Hmmm.. OK; I'll admit I'm not 100% certain why I need to use these rotation values.
+        // I know the math is right; I think the names are just a little counter-intuitive.
+        rotateX(vHeadNeck.z);
+        rotateY(vHeadNeck.y);
+        box(neckLength, 40, 40);
+        popMatrix();
+        
+        // Torso
+//        PVector vNeckTorso = Util.cartesianToPolar(PVector.sub(frame.getNeckPosition().getPVector(), frame.getTorsoPosition().getPVector()));
+//        float torsoLength = (frame.getNeckPosition().getY() - frame.getTorsoPosition().getY()) / 3;
+//        pushMatrix();
+//        translate(frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ());
+//        popMatrix();
         
         // Increment the counter; reset if needed (just loop things for now)
         // TODO Eventually some sort of time scrubbing or speed control is needed
