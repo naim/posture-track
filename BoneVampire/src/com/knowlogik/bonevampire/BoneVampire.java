@@ -8,6 +8,9 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import com.knowlogik.bonevampire.display.Display;
+import com.knowlogik.bonevampire.model.BoneCapture;
+
 // import org.OpenNI.Context;
 // import org.OpenNI.GeneralException;
 // import org.OpenNI.OutArg;
@@ -18,6 +21,9 @@ public class BoneVampire extends Frame {
     
     private static final long serialVersionUID = 1L;
     
+    // private final String CONTEXT_DEF = "config/OpenNI-Config.xml";
+    private final String TEST_KCAP = "data/2012-03-29-15-49.kcap";
+    
     private Display display = null;
     
     // private Context context = null;
@@ -27,8 +33,6 @@ public class BoneVampire extends Frame {
     public BoneVampire() {
         
         super("BoneVampire");
-        
-        // final String CONTEXT_DEF = "config/OpenNI-Config.xml";
         
         // Init OpenNI
         // try {
@@ -60,6 +64,11 @@ public class BoneVampire extends Frame {
         
         display.init();
         setVisible(true);
+    }
+    
+    private BoneCapture loadBoneCaptureFile(String filepath) {
+        
+        return new BoneCapture();
     }
     
     public static void main(String[] args) {

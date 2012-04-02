@@ -1,4 +1,4 @@
-package com.knowlogik.bonevampire.camera;
+package com.knowlogik.bonevampire.display;
 
 import peasy.CameraState;
 import peasy.PeasyCam;

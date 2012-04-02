@@ -1,10 +1,9 @@
-package com.knowlogik.bonevampire;
+package com.knowlogik.bonevampire.display;
 
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-import com.knowlogik.bonevampire.camera.PeasyCamPlus;
 
 import processing.core.PApplet;
 
