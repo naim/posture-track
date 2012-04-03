@@ -27,7 +27,7 @@ public class Display extends PApplet {
     private static final int Z_ORIGIN_OFFSET = 800;
     
     private static final int AXES_BRIGHTNESS = 150;
-    private static final int AXES_LENGTH = 100;
+    private static final int AXES_LENGTH = 50;
     
     private BoneCapture bcap;
     private BoneFrame testFrame;
@@ -100,7 +100,7 @@ public class Display extends PApplet {
         
         // Lights
         // NOTE No ambient light for now. Looks pretty "blah".
-        lights();
+        // lights();
         pointLight(245, 245, 245, X_ORIGIN_OFFSET, Y_ORIGIN_OFFSET, Z_ORIGIN_OFFSET - 200);
         pointLight(130, 130, 130, X_ORIGIN_OFFSET, Y_ORIGIN_OFFSET, Z_ORIGIN_OFFSET + 2000);
         
@@ -117,7 +117,7 @@ public class Display extends PApplet {
                 0 + X_ORIGIN_OFFSET, 0 + Y_ORIGIN_OFFSET, AXES_LENGTH + Z_ORIGIN_OFFSET);
         
         // Draw orientation blobs
-        strokeWeight(13);
+        strokeWeight(8);
         stroke(AXES_BRIGHTNESS, 0, 0);
         point(AXES_LENGTH + X_ORIGIN_OFFSET, 0 + Y_ORIGIN_OFFSET, 0 + Z_ORIGIN_OFFSET);
         stroke(0, AXES_BRIGHTNESS, 0);
@@ -126,8 +126,8 @@ public class Display extends PApplet {
         point(0 + X_ORIGIN_OFFSET, 0 + Y_ORIGIN_OFFSET, AXES_LENGTH + Z_ORIGIN_OFFSET);
         
         // Draw origin
-        strokeWeight(20);
-        stroke(AXES_BRIGHTNESS);
+        strokeWeight(13);
+        stroke(AXES_BRIGHTNESS + 50);
         point(0 + X_ORIGIN_OFFSET, 0 + Y_ORIGIN_OFFSET, 0 + Z_ORIGIN_OFFSET);
         
 //        // Draw.. things
@@ -167,43 +167,78 @@ public class Display extends PApplet {
         line(frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ(),
                 frame.getRightShoulderPosition().getX(), frame.getRightShoulderPosition().getY(), frame.getRightShoulderPosition().getZ());
         
-        // Turn off stroke for 3D primitives
+        // Set style for primitives
         noStroke();
+        fill(255, 160);
         
         // Head
         pushMatrix();
-        fill(255, 200);
         translate(frame.getHeadPosition().getX(), frame.getHeadPosition().getY() - (headLength * 40), frame.getHeadPosition().getZ() + headRadius + 5);
         scale(headWidth, headLength, headDepth);
         sphere(headRadius);
         popMatrix();
         
         // Neck
-        PVector vHeadNeck = Util.cartesianToPolar(PVector.sub(new PVector(frame.getHeadPosition().getX(), frame.getHeadPosition().getY() - (headLength * 80), frame.getHeadPosition().getZ() + headRadius),
-                frame.getNeckPosition().getPVector()));
-        float neckLength = (frame.getHeadPosition().getY() - frame.getNeckPosition().getY()) / 3;
-        pushMatrix();
-        fill(255, 100);
-        translate(frame.getNeckPosition().getX(), frame.getNeckPosition().getY() + neckLength, frame.getNeckPosition().getZ() - (neckLength / 3.5f));
-        // Hmmm.. OK; I'll admit I'm not 100% certain why I need to use these rotation values.
-        // I know the math is right; I think the names are just a little counter-intuitive.
-        rotateX(vHeadNeck.z);
-        rotateY(vHeadNeck.y);
-        box(neckLength, 40, 40);
-        popMatrix();
+        drawBoxAlongLine(frame.getHeadPosition().getX(), frame.getHeadPosition().getY() - (headLength * 80), frame.getHeadPosition().getZ() + headRadius,
+                frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ(), 30);
+        
+        // Left Shoulder
+        drawBoxAlongLine(frame.getLeftShoulderPosition().getX(), frame.getLeftShoulderPosition().getY(), frame.getLeftShoulderPosition().getZ(),
+                frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ(), 30);
+        drawBoxAlongLine(frame.getLeftShoulderPosition().getX(), frame.getLeftShoulderPosition().getY(), frame.getLeftShoulderPosition().getZ(),
+                frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ(), 30);
+        
+        // Right Shoulder
+        drawBoxAlongLine(frame.getRightShoulderPosition().getX(), frame.getRightShoulderPosition().getY(), frame.getRightShoulderPosition().getZ(),
+                frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ(), 30);
+        drawBoxAlongLine(frame.getRightShoulderPosition().getX(), frame.getRightShoulderPosition().getY(), frame.getRightShoulderPosition().getZ(),
+                frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ(), 30);
         
         // Torso
-//        PVector vNeckTorso = Util.cartesianToPolar(PVector.sub(frame.getNeckPosition().getPVector(), frame.getTorsoPosition().getPVector()));
-//        float torsoLength = (frame.getNeckPosition().getY() - frame.getTorsoPosition().getY()) / 3;
-//        pushMatrix();
-//        translate(frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ());
-//        popMatrix();
+        drawSphereAlongLine(frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ(),
+                frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ(), 100);
         
         // Increment the counter; reset if needed (just loop things for now)
         // TODO Eventually some sort of time scrubbing or speed control is needed
         frameCount++;
         if (bcap != null && frameCount >= bcap.frames.size())
             frameCount = 0;
+    }
+    
+    void drawBoxAlongLine(float x1, float y1, float z1, float x2, float y2, float z2, float weight)
+    {
+        PVector p1 = new PVector(x1, y1, z1);
+        PVector p2 = new PVector(x2, y2, z2);
+        PVector v1 = new PVector(x2 - x1, y2 - y1, z2 - z1);
+        float rho = sqrt(pow(v1.x, 2) + pow(v1.y, 2) + pow(v1.z, 2));
+        float phi = acos(v1.z / rho);
+        float the = atan2(v1.y, v1.x);
+        v1.mult(0.5f);
+        
+        pushMatrix();
+        translate(x1, y1, z1);
+        translate(v1.x, v1.y, v1.z);
+        rotateZ(the);
+        rotateY(phi);
+        box(weight, weight, (p1.dist(p2) * 0.6f));
+        popMatrix();
+    }
+    
+    void drawSphereAlongLine(float x1, float y1, float z1, float x2, float y2, float z2, float radius)
+    {
+        PVector v1 = new PVector(x2 - x1, y2 - y1, z2 - z1);
+        float rho = sqrt(pow(v1.x, 2) + pow(v1.y, 2) + pow(v1.z, 2));
+        float phi = acos(v1.z / rho);
+        float the = atan2(v1.y, v1.x);
+        v1.mult(0.5f);
+        
+        pushMatrix();
+        translate(x1, y1, z1);
+        translate(v1.x, v1.y, v1.z);
+        // rotateZ(the);
+        // rotateY(phi);
+        sphere(radius);
+        popMatrix();
     }
     
     void resizeFrame() {
