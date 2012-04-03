@@ -208,7 +208,7 @@ public class Display extends PApplet {
             frameCount = 0;
     }
     
-    void drawBoxAlongLine(float x1, float y1, float z1, float x2, float y2, float z2, float weight)
+    private void drawBoxAlongLine(float x1, float y1, float z1, float x2, float y2, float z2, float weight)
     {
         PVector p1 = new PVector(x1, y1, z1);
         PVector p2 = new PVector(x2, y2, z2);
@@ -227,7 +227,7 @@ public class Display extends PApplet {
         popMatrix();
     }
     
-    void drawSphereAlongLine(float x1, float y1, float z1, float x2, float y2, float z2, float radius, float sx, float sy, float sz)
+    private void drawSphereAlongLine(float x1, float y1, float z1, float x2, float y2, float z2, float radius, float sx, float sy, float sz)
     {
         PVector v1 = new PVector(x2 - x1, y2 - y1, z2 - z1);
         v1.mult(0.5f);
@@ -240,7 +240,7 @@ public class Display extends PApplet {
         popMatrix();
     }
     
-    void resizeFrame() {
+    private void resizeFrame() {
         canvasHeight = getHeight();
         canvasWidth = getWidth();
         setPreferredSize(new Dimension(canvasWidth, canvasHeight));
