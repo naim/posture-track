@@ -21,6 +21,10 @@ public class PeasyCamPlus extends PeasyCam {
         this.defaultCameraState = this.getState();
     }
     
+    public CameraState getDefaultCameraState() {
+        return this.defaultCameraState;
+    }
+    
     public void setResetAnimationDuration(long resetAnimationDurationInMillis) {
         this.resetAnimationDurationInMillis = resetAnimationDurationInMillis;
     }

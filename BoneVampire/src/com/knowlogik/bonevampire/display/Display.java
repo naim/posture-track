@@ -26,7 +26,7 @@ public class Display extends PApplet {
     
     private static final int X_ORIGIN_OFFSET = 0;
     private static final int Y_ORIGIN_OFFSET = 30;
-    private static final int Z_ORIGIN_OFFSET = 800;
+    private static final int Z_ORIGIN_OFFSET = 1000;
     
     private static final int AXES_BRIGHTNESS = 150;
     private static final int AXES_LENGTH = 50;
@@ -49,7 +49,7 @@ public class Display extends PApplet {
         
         // For testing purposes
         if (bcap == null)
-            testFrame = new BoneFrame("1333051071,(HEAD,0,0.518809,215.925,867.755),(NECK,0,15.8988,43.4482,992.853),(TORSO,0,15.9471,-168.375,991.344),(L-SHLDR,0,-129.656,43.4301,990.801),(R-SHLDR,0,161.453,43.4662,994.905)");
+            testFrame = new BoneFrame("1333464900,(HEAD,0,-19.4021,414.436,1345.27),(NECK,0,-31.7123,201.76,1455.54),(TORSO,0,-26.4751,31.5478,1460.85),(L-SHLDR,0,-228.629,196.01,1465.45),(R-SHLDR,0,165.204,207.509,1445.63),(L-ELBOW,0,-318.873,-7.48296,1544.35),(R-ELBOW,0,268.666,14.9624,1535.07),(L-HAND,0,-308.394,-198.886,1406.39),(R-HAND,0,287.179,-182.998,1407.61),(L-HIP,0,-173.851,-143.12,1473.84),(R-HIP,0,131.376,-134.208,1458.48)");
         
         size(INIT_WIDTH, INIT_HEIGHT, P3D);
         background(BACKGROUND);
@@ -82,10 +82,13 @@ public class Display extends PApplet {
     }
     
     // Anatomical properties
-    private int headRadius = 50;
+    private int headRadius = 85;
     private float headLength = 1.18f;
     private float headWidth = 1.0f;
     private float headDepth = 1.1f;
+    private int shoulderRadius = 40;
+    private int elbowRadius = 25;
+    private int handRadius = 30;
     
     private int frameCount = 0;
     
@@ -101,11 +104,11 @@ public class Display extends PApplet {
         background(BACKGROUND);
         
         // Lights
-        // NOTE No ambient light for now. Looks pretty "blah".
-        // lights();
-        normal(0, 1, 1);
         pointLight(245, 245, 245, X_ORIGIN_OFFSET, Y_ORIGIN_OFFSET, Z_ORIGIN_OFFSET - 200);
         pointLight(100, 100, 100, X_ORIGIN_OFFSET, Y_ORIGIN_OFFSET, Z_ORIGIN_OFFSET + 2000);
+        
+        // NOTE Translating this when the camera moves is kind of a pain; maybe it's not a great idea.
+        // spotLight(255, 0, 0, mouseX - (canvasWidth / 2), -mouseY + (canvasHeight / 2), Z_ORIGIN_OFFSET, 0, 0, 1, PI / 10, 2);
         
         // Draw axes
         strokeWeight(2);
@@ -148,58 +151,139 @@ public class Display extends PApplet {
         // Draw joints
         strokeWeight(20);
         stroke(200, 0, 200);
-        point(frame.getHeadPosition().getX(), frame.getHeadPosition().getY(), frame.getHeadPosition().getZ());
-        point(frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ());
-        point(frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ());
-        point(frame.getLeftShoulderPosition().getX(), frame.getLeftShoulderPosition().getY(), frame.getLeftShoulderPosition().getZ());
-        point(frame.getRightShoulderPosition().getX(), frame.getRightShoulderPosition().getY(), frame.getRightShoulderPosition().getZ());
+        point(frame.getHead().getX(), frame.getHead().getY(), frame.getHead().getZ());
+        point(frame.getNeck().getX(), frame.getNeck().getY(), frame.getNeck().getZ());
+        point(frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ());
+        point(frame.getLeftShoulder().getX(), frame.getLeftShoulder().getY(), frame.getLeftShoulder().getZ());
+        point(frame.getRightShoulder().getX(), frame.getRightShoulder().getY(), frame.getRightShoulder().getZ());
+        point(frame.getLeftElbow().getX(), frame.getLeftElbow().getY(), frame.getLeftElbow().getZ());
+        point(frame.getRightElbow().getX(), frame.getRightElbow().getY(), frame.getRightElbow().getZ());
+        point(frame.getLeftHand().getX(), frame.getLeftHand().getY(), frame.getLeftHand().getZ());
+        point(frame.getRightHand().getX(), frame.getRightHand().getY(), frame.getRightHand().getZ());
+        point(frame.getLeftHip().getX(), frame.getLeftHip().getY(), frame.getLeftHip().getZ());
+        point(frame.getRightHip().getX(), frame.getRightHip().getY(), frame.getRightHip().getZ());
         
         // Draw joint connectors
         strokeWeight(6);
         stroke(100, 0, 100);
-        line(frame.getHeadPosition().getX(), frame.getHeadPosition().getY() - (headLength * 80), frame.getHeadPosition().getZ() + headRadius,
-                frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ());
-        line(frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ(),
-                frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ());
-        line(frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ(),
-                frame.getLeftShoulderPosition().getX(), frame.getLeftShoulderPosition().getY(), frame.getLeftShoulderPosition().getZ());
-        line(frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ(),
-                frame.getRightShoulderPosition().getX(), frame.getRightShoulderPosition().getY(), frame.getRightShoulderPosition().getZ());
-        line(frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ(),
-                frame.getLeftShoulderPosition().getX(), frame.getLeftShoulderPosition().getY(), frame.getLeftShoulderPosition().getZ());
-        line(frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ(),
-                frame.getRightShoulderPosition().getX(), frame.getRightShoulderPosition().getY(), frame.getRightShoulderPosition().getZ());
+        line(frame.getHead().getX(), frame.getHead().getY() - (headLength * 80), frame.getHead().getZ() + (headRadius / 4),
+                frame.getNeck().getX(), frame.getNeck().getY(), frame.getNeck().getZ());
+        line(frame.getNeck().getX(), frame.getNeck().getY(), frame.getNeck().getZ(),
+                frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ());
+        line(frame.getNeck().getX(), frame.getNeck().getY(), frame.getNeck().getZ(),
+                frame.getLeftShoulder().getX(), frame.getLeftShoulder().getY(), frame.getLeftShoulder().getZ());
+        line(frame.getNeck().getX(), frame.getNeck().getY(), frame.getNeck().getZ(),
+                frame.getRightShoulder().getX(), frame.getRightShoulder().getY(), frame.getRightShoulder().getZ());
+        line(frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(),
+                frame.getLeftShoulder().getX(), frame.getLeftShoulder().getY(), frame.getLeftShoulder().getZ());
+        line(frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(),
+                frame.getRightShoulder().getX(), frame.getRightShoulder().getY(), frame.getRightShoulder().getZ());
+        line(frame.getLeftShoulder().getX(), frame.getLeftShoulder().getY(), frame.getLeftShoulder().getZ(),
+                frame.getLeftElbow().getX(), frame.getLeftElbow().getY(), frame.getLeftElbow().getZ());
+        line(frame.getRightShoulder().getX(), frame.getRightShoulder().getY(), frame.getRightShoulder().getZ(),
+                frame.getRightElbow().getX(), frame.getRightElbow().getY(), frame.getRightElbow().getZ());
+        line(frame.getLeftElbow().getX(), frame.getLeftElbow().getY(), frame.getLeftElbow().getZ(),
+                frame.getLeftHand().getX(), frame.getLeftHand().getY(), frame.getLeftHand().getZ());
+        line(frame.getRightElbow().getX(), frame.getRightElbow().getY(), frame.getRightElbow().getZ(),
+                frame.getRightHand().getX(), frame.getRightHand().getY(), frame.getRightHand().getZ());
+        line(frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(),
+                frame.getLeftHip().getX(), frame.getLeftHip().getY(), frame.getLeftHip().getZ());
+        line(frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(),
+                frame.getRightHip().getX(), frame.getRightHip().getY(), frame.getRightHip().getZ());
+        line(frame.getLeftHip().getX(), frame.getLeftHip().getY(), frame.getLeftHip().getZ(),
+                frame.getRightHip().getX(), frame.getRightHip().getY(), frame.getRightHip().getZ());
+        stroke(70, 0, 70);
+        line(frame.getLeftShoulder().getX(), frame.getLeftShoulder().getY(), frame.getLeftShoulder().getZ(),
+                frame.getLeftHip().getX(), frame.getLeftHip().getY(), frame.getLeftHip().getZ());
+        line(frame.getRightShoulder().getX(), frame.getRightShoulder().getY(), frame.getRightShoulder().getZ(),
+                frame.getRightHip().getX(), frame.getRightHip().getY(), frame.getRightHip().getZ());
         
         // Set style for primitives
         noStroke();
         fill(200, 150);
         
+        // Neck
+        pushMatrix();
+        translate(frame.getNeck().getX(), frame.getNeck().getY(), frame.getNeck().getZ());
+        scale(1, 0.6f, 0.6f);
+        sphere(35);
+        popMatrix();
+        drawBoxAlongLine(frame.getHead().getX(), frame.getHead().getY() - (headLength * 80), frame.getHead().getZ() + (headRadius / 4),
+                frame.getNeck().getX(), frame.getNeck().getY(), frame.getNeck().getZ(), 30);
+        
         // Head
         pushMatrix();
-        translate(frame.getHeadPosition().getX(), frame.getHeadPosition().getY() - (headLength * 40), frame.getHeadPosition().getZ() + headRadius + 5);
+        translate(frame.getHead().getX(), frame.getHead().getY() - (headLength * 40), frame.getHead().getZ() + (headRadius / 4));
         scale(headWidth, headLength, headDepth);
         sphere(headRadius);
         popMatrix();
         
-        // Neck
-        drawBoxAlongLine(frame.getHeadPosition().getX(), frame.getHeadPosition().getY() - (headLength * 80), frame.getHeadPosition().getZ() + headRadius,
-                frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ(), 30);
-        
         // Left Shoulder
-        drawBoxAlongLine(frame.getLeftShoulderPosition().getX(), frame.getLeftShoulderPosition().getY(), frame.getLeftShoulderPosition().getZ(),
-                frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ(), 30);
-        drawBoxAlongLine(frame.getLeftShoulderPosition().getX(), frame.getLeftShoulderPosition().getY(), frame.getLeftShoulderPosition().getZ(),
-                frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ(), 30);
+        pushMatrix();
+        translate(frame.getLeftShoulder().getX(), frame.getLeftShoulder().getY(), frame.getLeftShoulder().getZ());
+        sphere(shoulderRadius);
+        popMatrix();
+        drawBoxAlongLine(frame.getLeftShoulder().getX(), frame.getLeftShoulder().getY(), frame.getLeftShoulder().getZ(),
+                frame.getNeck().getX(), frame.getNeck().getY(), frame.getNeck().getZ(), 30);
+        drawBoxAlongLine(frame.getLeftShoulder().getX(), frame.getLeftShoulder().getY(), frame.getLeftShoulder().getZ(),
+                frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(), 30);
         
         // Right Shoulder
-        drawBoxAlongLine(frame.getRightShoulderPosition().getX(), frame.getRightShoulderPosition().getY(), frame.getRightShoulderPosition().getZ(),
-                frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ(), 30);
-        drawBoxAlongLine(frame.getRightShoulderPosition().getX(), frame.getRightShoulderPosition().getY(), frame.getRightShoulderPosition().getZ(),
-                frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ(), 30);
+        pushMatrix();
+        translate(frame.getRightShoulder().getX(), frame.getRightShoulder().getY(), frame.getRightShoulder().getZ());
+        sphere(shoulderRadius);
+        popMatrix();
+        drawBoxAlongLine(frame.getRightShoulder().getX(), frame.getRightShoulder().getY(), frame.getRightShoulder().getZ(),
+                frame.getNeck().getX(), frame.getNeck().getY(), frame.getNeck().getZ(), 30);
+        drawBoxAlongLine(frame.getRightShoulder().getX(), frame.getRightShoulder().getY(), frame.getRightShoulder().getZ(),
+                frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(), 30);
         
         // Torso
-        drawSphereAlongLine(frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ(),
-                frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ(), 100, 0.9f, 1, 0.5f);
+        pushMatrix();
+        translate(frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ());
+        scale(0.9f, 1, 0.5f);
+        sphere(160);
+        popMatrix();
+        drawBoxAlongLine(frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(),
+                frame.getLeftHip().getX(), frame.getLeftHip().getY(), frame.getLeftHip().getZ(), 45);
+        drawBoxAlongLine(frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(),
+                frame.getRightHip().getX(), frame.getRightHip().getY(), frame.getRightHip().getZ(), 45);
+        drawBoxAlongLine(frame.getLeftHip().getX(), frame.getLeftHip().getY(), frame.getLeftHip().getZ(),
+                frame.getRightHip().getX(), frame.getRightHip().getY(), frame.getRightHip().getZ(), 45);
+//        drawSphereAlongLine(frame.getNeck().getX(), frame.getNeck().getY(), frame.getNeck().getZ(),
+//                frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(), 100, 0.9f, 1, 0.5f);
+//        drawSphereAlongLine(frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(),
+//                frame.getLeftHip().getX(), frame.getLeftHip().getY(), frame.getLeftHip().getZ(), 70, 0.9f, 1, 0.5f);
+//        drawSphereAlongLine(frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(),
+//                frame.getRightHip().getX(), frame.getRightHip().getY(), frame.getRightHip().getZ(), 70, 0.9f, 1, 0.5f);
+        
+        // Left Arm
+        drawBoxAlongLine(frame.getLeftShoulder().getX(), frame.getLeftShoulder().getY(), frame.getLeftShoulder().getZ(),
+                frame.getLeftElbow().getX(), frame.getLeftElbow().getY(), frame.getLeftElbow().getZ(), 30);
+        drawBoxAlongLine(frame.getLeftElbow().getX(), frame.getLeftElbow().getY(), frame.getLeftElbow().getZ(),
+                frame.getLeftHand().getX(), frame.getLeftHand().getY(), frame.getLeftHand().getZ(), 30);
+        pushMatrix();
+        translate(frame.getLeftElbow().getX(), frame.getLeftElbow().getY(), frame.getLeftElbow().getZ());
+        sphere(elbowRadius);
+        popMatrix();
+        pushMatrix();
+        translate(frame.getLeftHand().getX(), frame.getLeftHand().getY(), frame.getLeftHand().getZ());
+        sphere(handRadius);
+        popMatrix();
+        
+        // Right Arm
+        drawBoxAlongLine(frame.getRightShoulder().getX(), frame.getRightShoulder().getY(), frame.getRightShoulder().getZ(),
+                frame.getRightElbow().getX(), frame.getRightElbow().getY(), frame.getRightElbow().getZ(), 30);
+        drawBoxAlongLine(frame.getRightElbow().getX(), frame.getRightElbow().getY(), frame.getRightElbow().getZ(),
+                frame.getRightHand().getX(), frame.getRightHand().getY(), frame.getRightHand().getZ(), 30);
+        pushMatrix();
+        translate(frame.getRightElbow().getX(), frame.getRightElbow().getY(), frame.getRightElbow().getZ());
+        sphere(elbowRadius);
+        popMatrix();
+        pushMatrix();
+        translate(frame.getRightHand().getX(), frame.getRightHand().getY(), frame.getRightHand().getZ());
+        sphere(handRadius);
+        popMatrix();
         
         // Increment the counter; reset if needed (just loop things for now)
         // TODO Eventually some sort of time scrubbing or speed control is needed
@@ -223,7 +307,7 @@ public class Display extends PApplet {
         translate(v1.x, v1.y, v1.z);
         rotateZ(the);
         rotateY(phi);
-        box(weight, weight, (p1.dist(p2) * 0.6f));
+        box(weight, weight, (p1.dist(p2) * 0.7f));
         popMatrix();
     }
     

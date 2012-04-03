@@ -20,7 +20,8 @@ public class BoneVampire extends Frame {
     private static final long serialVersionUID = 1L;
     
 //    private final String CONTEXT_DEF = "config/OpenNI-Config.xml";
-    private final String TEST_BONE_CAP = "data/2012-03-29-15-49.bcap";
+    //private final String TEST_BONE_CAP = "data/2012-03-29-15-49.bcap";
+    private final String TEST_BONE_CAP = "data/2012-04-03-11-10.bcap";
     
     private Display display;
     private BoneCapture boneCap;
