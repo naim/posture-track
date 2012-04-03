@@ -108,7 +108,7 @@ public class Display extends PApplet {
         pointLight(100, 100, 100, X_ORIGIN_OFFSET, Y_ORIGIN_OFFSET, Z_ORIGIN_OFFSET + 2000);
         
         // NOTE Translating this when the camera moves is kind of a pain; maybe it's not a great idea.
-        //spotLight(255, 0, 0, mouseX - (canvasWidth / 2), -mouseY + (canvasHeight / 2), Z_ORIGIN_OFFSET, 0, 0, 1, PI / 10, 2);
+        // spotLight(255, 0, 0, mouseX - (canvasWidth / 2), -mouseY + (canvasHeight / 2), Z_ORIGIN_OFFSET, 0, 0, 1, PI / 10, 2);
         
         // Draw axes
         strokeWeight(2);
@@ -239,17 +239,17 @@ public class Display extends PApplet {
                 frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(), 30);
         
         // Torso
-        pushMatrix();
-        translate(frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ());
-        scale(0.9f, 1, 0.5f);
-        sphere(160);
-        popMatrix();
         drawBoxAlongLine(frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(),
                 frame.getLeftHip().getX(), frame.getLeftHip().getY(), frame.getLeftHip().getZ(), 45);
         drawBoxAlongLine(frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(),
                 frame.getRightHip().getX(), frame.getRightHip().getY(), frame.getRightHip().getZ(), 45);
         drawBoxAlongLine(frame.getLeftHip().getX(), frame.getLeftHip().getY(), frame.getLeftHip().getZ(),
                 frame.getRightHip().getX(), frame.getRightHip().getY(), frame.getRightHip().getZ(), 45);
+        pushMatrix();
+        translate(frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ());
+        scale(0.9f, 1, 0.5f);
+        sphere(160);
+        popMatrix();
 //        drawSphereAlongLine(frame.getNeck().getX(), frame.getNeck().getY(), frame.getNeck().getZ(),
 //                frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(), 100, 0.9f, 1, 0.5f);
 //        drawSphereAlongLine(frame.getTorso().getX(), frame.getTorso().getY(), frame.getTorso().getZ(),
