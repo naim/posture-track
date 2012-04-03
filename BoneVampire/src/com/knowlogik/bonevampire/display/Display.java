@@ -81,9 +81,9 @@ public class Display extends PApplet {
     
     // Anatomical properties
     private int headRadius = 50;
-    private float headLength = 1.15f;
+    private float headLength = 1.18f;
     private float headWidth = 1.0f;
-    private float headDepth = 1.0f;
+    private float headDepth = 1.1f;
     
     private int frameCount = 0;
     
@@ -101,8 +101,9 @@ public class Display extends PApplet {
         // Lights
         // NOTE No ambient light for now. Looks pretty "blah".
         // lights();
+        normal(0, 1, 1);
         pointLight(245, 245, 245, X_ORIGIN_OFFSET, Y_ORIGIN_OFFSET, Z_ORIGIN_OFFSET - 200);
-        pointLight(130, 130, 130, X_ORIGIN_OFFSET, Y_ORIGIN_OFFSET, Z_ORIGIN_OFFSET + 2000);
+        pointLight(100, 100, 100, X_ORIGIN_OFFSET, Y_ORIGIN_OFFSET, Z_ORIGIN_OFFSET + 2000);
         
         // Draw axes
         strokeWeight(2);
@@ -169,7 +170,7 @@ public class Display extends PApplet {
         
         // Set style for primitives
         noStroke();
-        fill(255, 160);
+        fill(200, 150);
         
         // Head
         pushMatrix();
@@ -196,7 +197,7 @@ public class Display extends PApplet {
         
         // Torso
         drawSphereAlongLine(frame.getNeckPosition().getX(), frame.getNeckPosition().getY(), frame.getNeckPosition().getZ(),
-                frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ(), 100);
+                frame.getTorsoPosition().getX(), frame.getTorsoPosition().getY(), frame.getTorsoPosition().getZ(), 100, 0.9f, 1, 0.5f);
         
         // Increment the counter; reset if needed (just loop things for now)
         // TODO Eventually some sort of time scrubbing or speed control is needed
@@ -224,19 +225,15 @@ public class Display extends PApplet {
         popMatrix();
     }
     
-    void drawSphereAlongLine(float x1, float y1, float z1, float x2, float y2, float z2, float radius)
+    void drawSphereAlongLine(float x1, float y1, float z1, float x2, float y2, float z2, float radius, float sx, float sy, float sz)
     {
         PVector v1 = new PVector(x2 - x1, y2 - y1, z2 - z1);
-        float rho = sqrt(pow(v1.x, 2) + pow(v1.y, 2) + pow(v1.z, 2));
-        float phi = acos(v1.z / rho);
-        float the = atan2(v1.y, v1.x);
         v1.mult(0.5f);
         
         pushMatrix();
         translate(x1, y1, z1);
         translate(v1.x, v1.y, v1.z);
-        // rotateZ(the);
-        // rotateY(phi);
+        scale(sx, sy, sz);
         sphere(radius);
         popMatrix();
     }
