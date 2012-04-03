@@ -13,10 +13,12 @@ public class Display extends PApplet {
     
     private static final long serialVersionUID = 1L;
     
-    private static final int FRAMERATE = 30;
-    
     private static final int INIT_WIDTH = 1200;
     private static final int INIT_HEIGHT = 800;
+    
+    private static final int BACKGROUND = 40;
+    
+    private static final int FRAMERATE = 30;
     
     private static final int INIT_ZOOM = 450;
     private static final int MIN_ZOOM = 200;
@@ -50,7 +52,7 @@ public class Display extends PApplet {
             testFrame = new BoneFrame("1333051071,(HEAD,0,0.518809,215.925,867.755),(NECK,0,15.8988,43.4482,992.853),(TORSO,0,15.9471,-168.375,991.344),(L-SHLDR,0,-129.656,43.4301,990.801),(R-SHLDR,0,161.453,43.4662,994.905)");
         
         size(INIT_WIDTH, INIT_HEIGHT, P3D);
-        background(0);
+        background(BACKGROUND);
         
         // NOTE Alas, no smooth rendering with P3D...
         // smooth();
@@ -95,8 +97,8 @@ public class Display extends PApplet {
         else
             frame = bcap.frames.get(frameCount);
         
-        // Wipe background
-        background(0);
+        // Wipe buffer
+        background(BACKGROUND);
         
         // Lights
         // NOTE No ambient light for now. Looks pretty "blah".
