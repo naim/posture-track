@@ -108,7 +108,7 @@ public class Display extends PApplet {
         pointLight(100, 100, 100, X_ORIGIN_OFFSET, Y_ORIGIN_OFFSET, Z_ORIGIN_OFFSET + 2000);
         
         // NOTE Translating this when the camera moves is kind of a pain; maybe it's not a great idea.
-        // spotLight(255, 0, 0, mouseX - (canvasWidth / 2), -mouseY + (canvasHeight / 2), Z_ORIGIN_OFFSET, 0, 0, 1, PI / 10, 2);
+        //spotLight(255, 0, 0, mouseX - (canvasWidth / 2), -mouseY + (canvasHeight / 2), Z_ORIGIN_OFFSET, 0, 0, 1, PI / 10, 2);
         
         // Draw axes
         strokeWeight(2);
